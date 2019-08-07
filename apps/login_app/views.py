@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib import messages
-
+import bcrypt
 from .models import User
 # Create your views here.
 def show_login(request):
@@ -29,8 +29,8 @@ def add_user(request):
     else:
         print('*'*50, 'creating user')
         hashed = bcrypt.hashpw(request.POST['password_reg'].encode(), bcrypt.gensalt())
-        decoded_hash = hashed.decode()
-        User.objects.create(first_name=request.POST["first_name"], last_name=request.POST["last_name"], email_address=request.POST["email"], password=decoded_hashed)
+        #decoded_hash = hashed.decode()
+        User.objects.create(first_name=request.POST["first_name"], last_name=request.POST["last_name"], email_address=request.POST["email"], password=hashed)
         new_user = User.objects.last()
         request.session['new_user_id'] = new_user.id
         request.session['name'] = new_user.first_name
@@ -53,11 +53,11 @@ def process_login(request):
             messages.error(request, 'Email not found, please register')
             return redirect('/login')
         else:
-            if bcrypt.checkpw(request.POST['password_login'].encode(), user_matches[0].password.encode()):
+            if bcrypt.checkpw(request.POST['password_log'].encode(), user_matches[0].password.encode()):
                 request.session['new_user_id'] = user_matches[0].id
                 request.session['name'] = user_matches[0].first_name
                 request.session['logged_in'] = True
-                return redirect('/success')
+                return redirect('/')
             else:
                 messages.error(request, 'Password is incorrect')
                 return redirect('/login')
