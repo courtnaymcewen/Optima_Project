@@ -26,10 +26,28 @@ class UserManager(models.Manager):
         errors = {}
         if len(postData['email_log']) == 0:
             errors['email_log_empty'] = 'Please enter your email'
+            print('*'*25, 'email empty')
         if len(postData['password_log']) == 0:
             errors['password_log_empty'] = 'Please enter your password'
+            print('*'*25, 'password empty')
         if not EMAIL_REGEX.match(postData['email_log']):
             errors['email_log_invalid'] = "Please enter a valid email address"
+            print('*'*25, 'email invalid')
+        return errors
+    def update_validator(self, postData):
+        errors = {}
+        if len(postData['first_name']) < 2:
+            errors["first_name_min"] = "First name should be at least 2 characters"
+        if postData['first_name'].isalpha() == False:
+            errors["first_name_alpha"] = "First name must be letters only"
+        if len(postData['last_name']) < 2:
+            errors["last_name_min"] = "Last name should be at least 2 characters"
+        if postData['last_name'].isalpha() == False:
+            errors["last_name_alpha"] = "Last name must be letters only"
+        if len(postData['password_reg']) < 8:
+            errors["password_reg_min"] = "Password should be at least 8 characters"
+        if not EMAIL_REGEX.match(postData['email']):
+            errors['email_reg_invalid'] = "Please enter a valid email address"
         return errors
 
 class User(models.Model):
