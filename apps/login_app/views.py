@@ -5,13 +5,11 @@ from .models import User
 # Create your views here.
 def show_login(request):
     print('the login and registration page is being displayed')
-    if 'logged_in' not in request.session:
-        request.session['logged_in'] = False
     return render(request, 'login_app/index.html')
 
 def success(request):
     print('currently displaying the success page!')
-    if request.session['logged_in'] != True:
+    if 'new_user_id' not in request.session:
         return redirect('/login')
     else:
         return render(request, 'login_app/success.html')
@@ -34,8 +32,8 @@ def add_user(request):
         new_user = User.objects.last()
         request.session['new_user_id'] = new_user.id
         request.session['name'] = new_user.first_name
-        request.session['logged_in'] = True
-        return redirect('/success')
+        request.session['logged_in'] = 1
+        return redirect('/')
 
 def process_login(request):
     print('the login method is running')
@@ -50,20 +48,24 @@ def process_login(request):
         print('*'*50, 'log in successful')
         user_matches = User.objects.filter(email_address=request.POST['email_log'])
         if len(user_matches) == 0:
-            messages.error(request, 'Email not found, please register')
+            messages.error(request, 'Email not found, please register', extra_tags="login")
             return redirect('/login')
         else:
             if bcrypt.checkpw(request.POST['password_log'].encode(), user_matches[0].password.encode()):
                 request.session['new_user_id'] = user_matches[0].id
                 request.session['name'] = user_matches[0].first_name
-                request.session['logged_in'] = True
+                request.session['logged_in'] = 1
                 return redirect('/')
             else:
-                messages.error(request, 'Password is incorrect')
+                print('!'*50)
+                messages.error(request, 'Incorrect login credentials', extra_tags="login")
+                print('incorrect password has been entered')
                 return redirect('/login')
 
 def logout(request):
+    print('before'*50, request.session['logged_in'])
     print('the logout method is running')
     request.session.clear()
-    request.session['logged_in'] = False
+    request.session['logged_in'] = 0
+    print('after'*50, request.session['logged_in'])
     return redirect('/')
