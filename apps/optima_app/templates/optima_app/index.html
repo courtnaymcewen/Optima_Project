@@ -47,18 +47,19 @@
                         <div class="col-sm-12 col-md-12 col-lg-6">
                             <form>
                                 <div class="form-group">
-                                    <label for="formGroupExampleInput">Start Here</label>
+                                    <h5>Starting Location</h5>
+                                    <label for="formGroupExampleInput"></label>
                                     <input type="text" class="form-control column col-sm-5" id="formGroupExampleInput"
-                                        placeholder="Start Here">
+                                        placeholder='123 Main Street, Chicago, IL 60611'>
+                                    <h5>Add up to 4 destinations</h5>
+                                </div>
+
+
+                                <div id="new_location">
                                 </div>
                                 <div class="form-group column col-sm-5">
-                                    <button id="add_location" class="btn btn-primary">Add Location</button>
-
-                                    <div id="new_location">
-                                    </div>
-
-                                    <button type="submit" href="#" class="btn btn-secondary">SUBMIT</button>
-
+                                    <button id="add_location" class="btn btn-primary">Add Location</button><br> <br>
+                                    <button type="submit" href="#" class="btn btn-primary">SUBMIT</button>
                                 </div>
                             </form>
                         </div>
@@ -86,18 +87,28 @@
 
             <script>
                 $(document).ready(function () {
-                    counter = 0;
-                    $("#add_location").click(function (e) {
-                        if (counter == 3) {
-                            alert('No more than four allowed.')
-                        }
-                        counter += 1;
+                    var max_fields = 5; //maximum input boxes allowed
+                    var wrapper = $("#items"); //Fields wrapper
+                    var add_button = $("#add_location"); //Add button ID
+
+                    var x = 1; //initlal text box count
+                    $(add_button).click(function (e) { //on add input button click
+                        console.log(x)
                         e.preventDefault();
-                        $("#new_location").append(
-                            "<div class='form-group'><label for='formGroupExampleInput'>Add up to 4 destinations</label><input type='text' class='form-control' placeholder='123 Main Street, Chicago, IL 60611'></div>"
-                        );
+                        if (x < max_fields) { //max input box allowed
+                            x++;
+                            $("#new_location").append(
+                                "<div class='form-group' mt-2><label for='formGroupExampleInput'></label><input type='text' class='form-control' placeholder='123 Main Street, Chicago, IL 60611'></div>"
+                            );
+                        }
                     });
+
+
+                    $(wrapper).on("click", ".remove_field", function (e) { //user click on remove field
+                        e.preventDefault(); $(this).parent('div').remove(); x--;
+                    })
                 });
+
             </script>
 </body>
 
