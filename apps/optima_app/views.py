@@ -7,18 +7,18 @@ def index(request):
     print('*'*50, 'showing the home page')
     print('index'*50, request.session['logged_in'])
     if 'new_user_id' not in request.session:
-        return render(request, "optima_app/index.html")
+        return render(request, "optima_app/routes.html")
     else:
         user = User.objects.get(id=request.session['new_user_id'])
         context = {
             'user': user,
             'logged_in': request.session['logged_in']
         }
-        return render(request, "optima_app/index.html", context)
+        return render(request, "optima_app/routes.html")
 
-def results (request):
-    print('*'*50, 'showing the results page')
-    return render(request, "optima_app/results.html")
+# def results (request):
+#     print('*'*50, 'showing the results page')
+#     return render(request, "optima_app/results.html")
 
 def show_account(request, user_id):
     print('*'*50, 'showing the update account page')
@@ -47,4 +47,3 @@ def update_account(request, user_id):
         edit_this_user.password = hashed
         edit_this_user.save()
         return redirect('/my_account/' + str(edit_this_user.id))
-    
